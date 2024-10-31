@@ -25,17 +25,17 @@ export class ApiService {
   login(credentials: any): any {
     try {
       this.http.post(this.link + '/login', credentials)
-      .pipe(catchError((error: any, caught: Observable<any>): Observable<any> => {
-        this.loginErrorSubj.next('username o password sbagliati');
-        return of();
-      }))
-      .subscribe((response: any) => {
+        .pipe(catchError((error: any, caught: Observable<any>): Observable<any> => {
+          this.loginErrorSubj.next('username o password sbagliati');
+          return of();
+        }))
+        .subscribe((response: any) => {
           if (response) {
             console.log(response.data);
             this.token = response.data['access-token'];
             this.refresh = response.data['refresh-token'];
             this.isLoggedIn = true;
-            this.router.navigate(['/']);
+            this.router.navigate(['/main']);
             this.loginSubj.next(true);
           }
         });
@@ -44,29 +44,39 @@ export class ApiService {
     }
   }
 
+  loginFake(username: string, password: string): any {
+    if (username === 'admin' && password === 'root') {
+      this.isLoggedIn = true;
+      this.router.navigate(['/main']);
+      this.loginSubj.next(true);
+    } else {
+      this.loginErrorSubj.next('username o password sbagliati');
+    }
+  }
+
   refreshToken(): any {
     return this.http.post(this.link + '/token', { refresh: this.refresh });
   }
 
   get(endpoint: string): any {
-    return this.http.get<any>(this.link + endpoint, {headers: new HttpHeaders().set('Authorization','bearer ' + this.token)});
+    return this.http.get<any>(this.link + endpoint, { headers: new HttpHeaders().set('Authorization', 'bearer ' + this.token) });
   }
 
   post(endpoint: string, body: any): any {
     console.log(this.token);
-    return this.http.post(this.link + endpoint, body, {headers: new HttpHeaders().set('Authorization','bearer ' + this.token)});
+    return this.http.post(this.link + endpoint, body, { headers: new HttpHeaders().set('Authorization', 'bearer ' + this.token) });
   }
 
   delete(endpoint: string, body?: any): any {
     if (body) {
-      return this.http.delete(this.link + endpoint, {headers: new HttpHeaders().set('Authorization','bearer ' + this.token), body: body});
+      return this.http.delete(this.link + endpoint, { headers: new HttpHeaders().set('Authorization', 'bearer ' + this.token), body: body });
     } else {
-      return this.http.delete(this.link + endpoint, {headers: new HttpHeaders().set('Authorization','bearer ' + this.token)});
+      return this.http.delete(this.link + endpoint, { headers: new HttpHeaders().set('Authorization', 'bearer ' + this.token) });
     }
   }
 
   put(endpoint: string, body: any): any {
-    return this.http.put(this.link + endpoint, body, {headers: new HttpHeaders().set('Authorization','bearer ' + this.token)});
+    return this.http.put(this.link + endpoint, body, { headers: new HttpHeaders().set('Authorization', 'bearer ' + this.token) });
   }
 
   logout() {
