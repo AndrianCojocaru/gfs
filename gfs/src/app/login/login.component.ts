@@ -11,10 +11,10 @@ import { ApiService } from '../api.service';
 export class LoginComponent {
   constructor( private apiService: ApiService ) { }
 
-  ngOnInit(): void {
-    this.login('admin', 'root');
-  }
-  
+  // ngOnInit(): void {
+  //   this.login('admin', 'root');
+  // }
+
   login(username: string, password: string): void {
     this.apiService.loginFake(username, password);
   }

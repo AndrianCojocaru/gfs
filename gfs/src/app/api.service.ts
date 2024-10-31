@@ -44,6 +44,12 @@ export class ApiService {
     }
   }
 
+  logout() {
+    this.isLoggedIn = false;
+    this.loginSubj.next(false);
+    this.router.navigate(['/login']);
+  }
+
   loginFake(username: string, password: string): any {
     if (username === 'admin' && password === 'root') {
       this.isLoggedIn = true;
@@ -77,11 +83,5 @@ export class ApiService {
 
   put(endpoint: string, body: any): any {
     return this.http.put(this.link + endpoint, body, { headers: new HttpHeaders().set('Authorization', 'bearer ' + this.token) });
-  }
-
-  logout() {
-    this.isLoggedIn = false;
-    this.loginSubj.next(false);
-    this.router.navigate(['/login']);
   }
 }
